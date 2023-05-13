@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DBService } from './services/db.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,15 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'wingsandsnacks';
+  constructor(private db:DBService)
+  {
+    // get products list
+
+    //  this.db.getProducts().subscribe((data)=>{
+    //    console.log("the products", data);
+    //  })
+
+    // end of get products list
+  }
+
 }
