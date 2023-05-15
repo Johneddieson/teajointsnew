@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as $ from 'jquery';
-
+import { DBService } from '../services/db.service';
+import * as _ from 'lodash';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -9,10 +10,28 @@ import * as $ from 'jquery';
 export class HeaderComponent implements OnInit {
 public curentpath: string = ''
 public hero: string = ''
-  constructor() { }
+public categorylist: any[] = []
+public bannerproduct: any[] = []
+  constructor(private db:DBService) 
+  { 
+     // get products list
+     this.db.getProducts().subscribe((data)=>
+     {
+      //console.log("All Products", data)
+      this.bannerproduct = data.filter(f => f.Category == 'Silog Meals' && f.ProductName == 'Tapsilog')
+      var groupedbycategory = _(data).groupBy('Category')
+       .map((items, category) => 
+       {
+        return category
+      }).value() 
+        this.categorylist = groupedbycategory
+      })
 
-  ngOnInit(): void {
+    // end of get products list
+  }
 
+  ngOnInit(): void 
+  {
     setInterval(() => 
     {
       this.curentpath = window.location.pathname;
