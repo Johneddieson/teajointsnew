@@ -73,8 +73,23 @@ filteredproductsmodel: string = 'All'
 
 getProducts(filteredvalue: any)
 {
+  // var obj = 
+  // {
+  //   DateCreated: '2023-05-16'
+  // }
+  // this.db.updateProduct(fe.id, obj)
+  // .then((el) =>
+  // {
+  //   console.log("updating test success", el)
+  // }).catch((err) =>
+  // {
+  //   console.log("updating test error", err)
+  // })
+
+
   this.db.getProducts().subscribe((data) => 
     {
+        //let halfarray = data.filter((i, idx) => idx < Math.floor(data.length / 2))
 
           var featuredproducts = filteredvalue == 'All' ? data.filter(f => f.Category == 'Frappe' ||
           f.Category == 'Sizzling Meal With Rice' ||
@@ -83,7 +98,7 @@ getProducts(filteredvalue: any)
           featuredproducts.map((i) => 
           {
             var imageConverted = i.ImageUrl.split("/")
-            i.ImageConverted = `${imageConverted[0]}//${imageConverted[2]}/${imageConverted[3]}//-/contrast/3/-/filter/cyren/100/-/preview/270x270/`
+            i.ImageConverted = `${imageConverted[0]}//${imageConverted[2]}/${imageConverted[3]}//-/contrast/3/-/filter/cyren/100/-/preview/3000x3000/`
           })
           this.featuredproducts = featuredproducts
     //   var groupedbyCategory = _(data).groupBy('Category')

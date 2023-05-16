@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, collectionData } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, doc, setDoc, updateDoc } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -19,5 +19,10 @@ export class DBService {
   {
     let $productsRef=collection(this.firestore,"Products");
     return collectionData($productsRef,{idField:"id"}) as Observable<any[]>;
+  }
+  updateProduct(id:string,product:any)
+  {
+    let $productRef=doc(this.firestore,"Products/"+id);
+    return updateDoc($productRef,product);
   }
 }
