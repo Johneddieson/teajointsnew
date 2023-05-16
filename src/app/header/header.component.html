@@ -3,7 +3,7 @@
     <div class="humberger__menu__overlay"></div>
     <div class="humberger__menu__wrapper">
         <div class="humberger__menu__logo">
-            <a routerLink="/"><img src="assets/img/teajointslogolatest.jpg" alt=""></a>
+            <a href="/"><img src="https://ucarecdn.com/e76e38af-85ad-4cb0-bb98-bd848214ec62/-/scale_crop/119x119/center/" alt=""></a>
         </div>
         <div class="humberger__menu__cart">
             <ul>
@@ -13,7 +13,7 @@
             <div class="header__cart__price">item: <span>$150.00</span></div>
         </div>
         <div class="humberger__menu__widget">
-            <div class="header__top__right__language">
+            <!-- <div class="header__top__right__language">
                 <img src="assets/img/language.png" alt="">
                 <div>English</div>
                 <span class="arrow_carrot-down"></span>
@@ -21,6 +21,9 @@
                     <li><a href="#">Spanis</a></li>
                     <li><a href="#">English</a></li>
                 </ul>
+            </div> -->
+            <div class="header__top__right__social">
+                <a href="#"><i class="fa fa-user-plus"></i> Register</a>   
             </div>
             <div class="header__top__right__auth">
                 <a href="#"><i class="fa fa-user"></i> Login</a>
@@ -88,13 +91,13 @@
             <div class="row">
                 <div class="col-lg-3">
                     <div class="header__logo">
-                        <a routerLink="/"><img src="assets/img/teajointslogolatest.jpg" alt=""></a>
+                        <a href="/"><img src="https://ucarecdn.com/e76e38af-85ad-4cb0-bb98-bd848214ec62/-/scale_crop/119x119/center/" alt=""></a>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <nav class="header__menu">
                         <ul>
-                            <li class="{{curentpath == '/' ? 'active' : ''}}"><a routerLink="/">Home</a></li>
+                            <li class="{{curentpath == '/' ? 'active' : ''}}"><a href="/">Home</a></li>
                             <li class="{{curentpath == '/shop' ? 'active' : ''}}"><a routerLink="/shop">Shop</a></li>
                             <!-- <li><a href="#">Pages</a>
                                 <ul class="header__menu__dropdown">
@@ -145,7 +148,7 @@
                     <div class="hero__search">
                         <div class="hero__search__form">
                             <form action="#">
-                                <input type="text" placeholder="What do you need?">
+                                <input type="text" placeholder="Search Product Name or Category">
                                 <button type="submit" class="site-btn">SEARCH</button>
                             </form>
                         </div>
@@ -159,8 +162,8 @@
                             </div>
                         </div>
                     </div>
-                    <div *ngFor="let data of bannerproduct">
-                        <div *ngIf="curentpath == '/'" class="hero__item set-bg" style="background-image: url({{data.ImageUrl}});">
+                    <div>
+                        <div *ngIf="curentpath == '/'" class="hero__item set-bg" style="background-image: url('https://ucarecdn.com/75838fea-6388-47e9-a753-7e15acac58a2/-/filter/cyren/100/-/preview/3000x3000/');">
                             <div class="hero__text">
                                 <span>BEEF FRESH</span>
                                 <h2>Tapsilog <br />100% Authentic</h2>

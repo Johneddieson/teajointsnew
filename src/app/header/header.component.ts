@@ -17,8 +17,7 @@ public bannerproduct: any[] = []
      // get products list
      this.db.getProducts().subscribe((data)=>
      {
-      //console.log("All Products", data)
-      this.bannerproduct = data.filter(f => f.Category == 'Silog Meals' && f.ProductName == 'Tapsilog')
+      //this.bannerproduct = data.filter(f => f.Category == 'Silog Meals' && f.ProductName == 'Tapsilog')
       var groupedbycategory = _(data).groupBy('Category')
        .map((items, category) => 
        {
