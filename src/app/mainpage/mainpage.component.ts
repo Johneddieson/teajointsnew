@@ -3,6 +3,7 @@ import * as $ from 'jquery';
 import 'owl.carousel';
 import { DBService } from '../services/db.service';
 import * as _ from 'lodash';
+import * as moment from 'moment';
 @Component({
   selector: 'app-mainpage',
   templateUrl: './mainpage.component.html',
@@ -14,7 +15,14 @@ groupedbycategoryfirstindexofitem: any[] = []
 featuredproductscategory: any[] = []
 featuredproducts: any[] = []
 filteredproductsmodel: string = 'All'
-  constructor(private db:DBService) 
+latestproducts: any[] = []
+firsthalf: any[] = []
+secondhalf: any[] = []
+latestproductsfortoprated: any[] = []
+firsthalffortoprated: any[] = []
+secondhalffortoprated: any[] = []
+topratedproducts: any[] = []
+constructor(private db:DBService) 
   {
     this.getProducts('All');
   }
@@ -73,34 +81,92 @@ filteredproductsmodel: string = 'All'
 
 getProducts(filteredvalue: any)
 {
-  // var obj = 
-  // {
-  //   DateCreated: '2023-05-16'
-  // }
-  // this.db.updateProduct(fe.id, obj)
-  // .then((el) =>
-  // {
-  //   console.log("updating test success", el)
-  // }).catch((err) =>
-  // {
-  //   console.log("updating test error", err)
-  // })
-
-
+  // var obj = {
+  //   Ratings: 100,
+  //   TimesOrdered: 100,
+  // };
+  // data.forEach((fe) => {
+  //   this.db
+  //     .updateProduct(fe.id, obj)
+  //     .then((el) => {
+  //       console.log('updating test success', el);
+  //     })
+  //     .catch((err) => {
+  //       console.log('updating test error', err);
+  //     });
+  // });
   this.db.getProducts().subscribe((data) => 
     {
+      const fortoprated = data
+      let currentmonthandyear = new Date();
         //let halfarray = data.filter((i, idx) => idx < Math.floor(data.length / 2))
+        //console.log("the data", data) 
+        
+        //filter the first 6 latest product
+        var allproductsfilterforlatestproduct = data
+        allproductsfilterforlatestproduct.map((i) => 
+        {
+          i.DateCreatedMonthAndYear = moment(moment(i.DateCreated).toDate()).format('YYYY-MM')
+        })
+        var finalizefilterlatestproduct = allproductsfilterforlatestproduct.filter(f => f.DateCreatedMonthAndYear
+           == moment(currentmonthandyear).format('YYYY-MM'))
+           this.latestproducts = finalizefilterlatestproduct
+          var thelatest = this.latestproducts.slice(0,6)
+          const middleIndex = Math.ceil(thelatest.length / 2);
+          const firstHalf = thelatest.splice(0, middleIndex);   
+          const secondHalf = thelatest.splice(-middleIndex);
+          this.firsthalf = firstHalf;
+          this.secondhalf = secondHalf
+          this.firsthalf.map((i) => 
+          {
+            var imageConverted = i.ImageUrl.split("/")
+            i.ImageConverted = `${imageConverted[0]}//${imageConverted[2]}/${imageConverted[3]}//-/contrast/3/-/filter/cyren/100/-/preview/270x270/`
+          })
+          this.secondhalf.map((i) => 
+          {
+            var imageConverted = i.ImageUrl.split("/")
+            i.ImageConverted = `${imageConverted[0]}//${imageConverted[2]}/${imageConverted[3]}//-/contrast/3/-/filter/cyren/100/-/preview/270x270/`
+          })
+          //End of filter the first 6 latest product
 
-          var featuredproducts = filteredvalue == 'All' ? data.filter(f => f.Category == 'Frappe' ||
+
+          //filter the top 6 rated products
+          var allproductsfilterfortopratedproduct = data
+          var finalizefiltertopratedproduct = allproductsfilterfortopratedproduct.filter(f => f.Ratings >= 50)
+          this.topratedproducts = finalizefiltertopratedproduct
+            var thelatestfortoprated = this.topratedproducts.slice(0,6)
+            const middleIndexfortoprated = Math.ceil(thelatestfortoprated.length / 2);
+            const firstHalffortoprated = thelatestfortoprated.splice(0, middleIndexfortoprated);   
+            const secondHalffortoprated = thelatestfortoprated.splice(-middleIndexfortoprated);
+            this.firsthalffortoprated = firstHalffortoprated;
+            this.secondhalffortoprated = secondHalffortoprated
+            this.firsthalffortoprated.map((i) => 
+            {
+              var imageConvertedfortoprated = i.ImageUrl.split("/")
+              i.ImageConverted = `${imageConvertedfortoprated[0]}//${imageConvertedfortoprated[2]}/${imageConvertedfortoprated[3]}//-/contrast/3/-/filter/cyren/100/-/preview/270x270/`
+            })
+            this.secondhalffortoprated.map((i) => 
+            {
+              var imageConvertedfortoprated = i.ImageUrl.split("/")
+              i.ImageConverted = `${imageConvertedfortoprated[0]}//${imageConvertedfortoprated[2]}/${imageConvertedfortoprated[3]}//-/contrast/3/-/filter/cyren/100/-/preview/270x270/`
+            })
+          //End of filter the top 6 rated products
+
+
+          
+        //Featured Products
+        var featuredproducts = filteredvalue == 'All' ? data.filter(f => f.Category == 'Frappe' ||
           f.Category == 'Sizzling Meal With Rice' ||
           f.Category == 'Snacks') : data.filter(f => f.Category == filteredvalue) 
-
           featuredproducts.map((i) => 
           {
             var imageConverted = i.ImageUrl.split("/")
             i.ImageConverted = `${imageConverted[0]}//${imageConverted[2]}/${imageConverted[3]}//-/contrast/3/-/filter/cyren/100/-/preview/3000x3000/`
           })
           this.featuredproducts = featuredproducts
+          //End of Featured Products
+
+
     //   var groupedbyCategory = _(data).groupBy('Category')
     //   .map((items, category) => 
     //   {
@@ -131,5 +197,10 @@ getProducts(filteredvalue: any)
 filterFeaturedProducts(value: any)
 {
   this.getProducts(value)
+}
+
+paginate(array: any, page_size: any, page_number: any) {
+  // human-readable page numbers usually start with 1, so we reduce 1 in the first argument
+  return array.slice((page_number - 1) * page_size, page_number * page_size);
 }
 }
