@@ -225,12 +225,12 @@
             <div class="row">
                 <div class="col-lg-6 col-md-6 col-sm-6">
                     <div class="banner__pic">
-                        <img src="assets/img/banner/banner-1.jpg" alt="">
+                        <img src="https://ucarecdn.com/ce586a1f-00c6-4690-a8ca-4fbb6afaed93//-/contrast/3/-/filter/cyren/100/-/preview/1000x3000/" alt="">
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6">
                     <div class="banner__pic">
-                        <img src="assets/img/banner/banner-2.jpg" alt="">
+                        <img src="https://ucarecdn.com/d177d2be-ce53-4760-8828-47dd3e5b56cf//-/contrast/3/-/filter/cyren/100/-/preview/1000x3000/" alt="">
                     </div>
                 </div>
             </div>
@@ -365,22 +365,22 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-6">
+                <div class="col-lg-4 col-md-4 col-sm-6" *ngFor="let data of get3latestblog">
                     <div class="blog__item">
                         <div class="blog__item__pic">
-                            <img src="assets/img/blog/blog-1.jpg" alt="">
+                            <img src="{{data.ImageConverted}}">
                         </div>
                         <div class="blog__item__text">
                             <ul>
-                                <li><i class="fa fa-calendar-o"></i> May 4,2019</li>
-                                <li><i class="fa fa-comment-o"></i> 5</li>
+                                <li><i class="fa fa-calendar-o"></i> {{data.DateCreatedChangeFormat}}</li>
+                                <li><i class="fa fa-comment-o"></i> {{data.Comments.length}}</li>
                             </ul>
-                            <h5><a href="#">Cooking tips make cooking simple</a></h5>
-                            <p>Sed quia non numquam modi tempora indunt ut labore et dolore magnam aliquam quaerat </p>
+                            <h5><a href="#">{{data.Title}}</a></h5>
+                            <p>{{data.Description.slice(0,50)}} </p>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-4 col-sm-6">
+                <!-- <div class="col-lg-4 col-md-4 col-sm-6">
                     <div class="blog__item">
                         <div class="blog__item__pic">
                             <img src="assets/img/blog/blog-2.jpg" alt="">
@@ -409,7 +409,7 @@
                             <p>Sed quia non numquam modi tempora indunt ut labore et dolore magnam aliquam quaerat </p>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </section>

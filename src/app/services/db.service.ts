@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, collectionData, doc, setDoc, updateDoc, increment } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData, doc, setDoc, updateDoc, increment } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -15,7 +15,12 @@ export class DBService {
 
   }
 
-  getProducts()
+  addBlog(blog: any)
+  {
+    let $addblog = collection(this.firestore, 'Blog')
+    return addDoc($addblog, blog);
+  }
+  getProducts() 
   {
     let $productsRef=collection(this.firestore,"Products");
     return collectionData($productsRef,{idField:"id"}) as Observable<any[]>;
@@ -25,4 +30,14 @@ export class DBService {
     let $productRef=doc(this.firestore,"Products/"+id);
     return updateDoc($productRef,product);
   }
+  getSpecificBlog(id: string)
+  {
+    
+  }
+  getBlogs()
+  {
+    let $blogRef = collection(this.firestore, "Blog");
+    return collectionData($blogRef, {idField: "id"}) as Observable<any[]>
+  }
+
 }

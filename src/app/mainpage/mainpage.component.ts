@@ -25,9 +25,11 @@ topratedproducts: any[] = []
 bestsellerproducts: any[] = []
 firsthalfforbestseller: any[] = []
 secondhalfforbestseller: any[] = []
+get3latestblog: any[] = []
 constructor(private db:DBService) 
   {
     this.getProducts('All');
+    this.getBlogs()
   }
   ngOnInit(): void 
   {
@@ -82,6 +84,27 @@ constructor(private db:DBService)
   
 }
 
+addBlog()
+{
+  var obj = 
+  {
+      Category: 'Food',
+      Title: 'The Moment You Need To Remove Garlic From The Menu',
+      Description: 'Sed porttitor lectus nibh. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Sed porttitor lectus nibh. Donec sollicitudin molestie malesuada. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Proin eget tortor risus. Donec rutrum congue leo eget malesuada. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Donec sollicitudin molestie malesuada. Nulla quis lorem ut libero malesuada feugiat. Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem.',
+      Subtitle: 'The corner window forms a place within a place that is a resting point within the large space.',
+      Subdescription: 'The study area is located at the back with a view of the vast nature. Together with the other buildings, a congruent story has been managed in which the whole has a reinforcing effect on the components. The use of materials seeks connection to the main house, the adjacent stables',
+      Comments: [],
+      DateCreated: '2023-05-19',
+      ImageUrl: 'https://ucarecdn.com/75838fea-6388-47e9-a753-7e15acac58a2/442FD838-321D-4A6A-8932-D1B4E4C42040.jpeg'    
+  }
+  this.db.addBlog(obj).then((el) => 
+  {
+    console.log("blog added successfully")
+  }).catch((err) => 
+  {
+    console.log("error adding blog")
+  })
+}
 getProducts(filteredvalue: any)
 {
   // var obj = {
@@ -244,5 +267,22 @@ filterFeaturedProducts(value: any)
 paginate(array: any, page_size: any, page_number: any) {
   // human-readable page numbers usually start with 1, so we reduce 1 in the first argument
   return array.slice((page_number - 1) * page_size, page_number * page_size);
+}
+
+getBlogs()
+{
+  this.db.getBlogs().subscribe((data) => 
+  {
+      var latestblog = data.sort((a, b) => Number(moment(b.DateCreated).toDate()) - Number(moment(a.DateCreated).toDate()))
+      var get3latestblog = latestblog.splice(0,3)
+      
+      get3latestblog.map((i) => 
+      {
+        var imageConvertedforbestseller = i.ImageUrl.split("/")
+        i.ImageConverted = `${imageConvertedforbestseller[0]}//${imageConvertedforbestseller[2]}/${imageConvertedforbestseller[3]}//-/contrast/3/-/filter/cyren/100/-/preview/3000x3000/`
+        i.DateCreatedChangeFormat = moment(i.DateCreated).format('LL')
+      })
+      this.get3latestblog = get3latestblog
+  })
 }
 }
