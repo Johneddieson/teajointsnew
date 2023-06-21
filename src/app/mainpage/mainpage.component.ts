@@ -22,6 +22,9 @@ latestproductsfortoprated: any[] = []
 firsthalffortoprated: any[] = []
 secondhalffortoprated: any[] = []
 topratedproducts: any[] = []
+bestsellerproducts: any[] = []
+firsthalfforbestseller: any[] = []
+secondhalfforbestseller: any[] = []
 constructor(private db:DBService) 
   {
     this.getProducts('All');
@@ -95,9 +98,25 @@ getProducts(filteredvalue: any)
   //       console.log('updating test error', err);
   //     });
   // });
+
+  // var sizzlingmeal = data.filter(f => f.Category != 'Sizzling Meal With Rice')
+  // var obj = {
+  //   Ratings: 0,
+  //   TimesOrdered: 0,
+  // };
+  // sizzlingmeal.forEach((fe) => {
+  //   this.db
+  //     .updateProduct(fe.id, obj)
+  //     .then((el) => {
+  //       console.log('updating test success', el);
+  //     })
+  //     .catch((err) => {
+  //       console.log('updating test error', err);
+  //     });
+  // });
+
   this.db.getProducts().subscribe((data) => 
-    {
-      const fortoprated = data
+    { 
       let currentmonthandyear = new Date();
         //let halfarray = data.filter((i, idx) => idx < Math.floor(data.length / 2))
         //console.log("the data", data) 
@@ -133,6 +152,7 @@ getProducts(filteredvalue: any)
           //filter the top 6 rated products
           var allproductsfilterfortopratedproduct = data
           var finalizefiltertopratedproduct = allproductsfilterfortopratedproduct.filter(f => f.Ratings >= 50)
+          finalizefiltertopratedproduct = finalizefiltertopratedproduct.sort((a, b) => Number(b.Ratings) - Number(a.Ratings))
           this.topratedproducts = finalizefiltertopratedproduct
             var thelatestfortoprated = this.topratedproducts.slice(0,6)
             const middleIndexfortoprated = Math.ceil(thelatestfortoprated.length / 2);
@@ -152,11 +172,33 @@ getProducts(filteredvalue: any)
             })
           //End of filter the top 6 rated products
 
-
-          
+            //filter the top 6 bestseller products
+            var allproductsfilterforbestsellerproduct = data
+            var finalizefilterbestsellerproduct = allproductsfilterforbestsellerproduct.filter(f => f.TimesOrdered >= 100)
+            finalizefilterbestsellerproduct = finalizefilterbestsellerproduct.sort((a, b) => Number(b.TimesOrdered) - Number(a.TimesOrdered))
+            this.bestsellerproducts = finalizefilterbestsellerproduct
+              var thelatestforbestseller = this.bestsellerproducts.slice(0,6)
+              const middleIndexforbestseller = Math.ceil(thelatestforbestseller.length / 2);
+              const firstHalfforbestseller = thelatestforbestseller.splice(0, middleIndexforbestseller);   
+              const secondHalfforbestseller = thelatestforbestseller.splice(-middleIndexforbestseller);
+              this.firsthalfforbestseller = firstHalfforbestseller;
+              this.secondhalfforbestseller = secondHalfforbestseller
+              this.firsthalfforbestseller.map((i) => 
+              {
+                var imageConvertedforbestseller = i.ImageUrl.split("/")
+                i.ImageConverted = `${imageConvertedforbestseller[0]}//${imageConvertedforbestseller[2]}/${imageConvertedforbestseller[3]}//-/contrast/3/-/filter/cyren/100/-/preview/270x270/`
+              })
+              this.secondhalfforbestseller.map((i) => 
+              {
+                var imageConvertedforbestseller = i.ImageUrl.split("/")
+                i.ImageConverted = `${imageConvertedforbestseller[0]}//${imageConvertedforbestseller[2]}/${imageConvertedforbestseller[3]}//-/contrast/3/-/filter/cyren/100/-/preview/270x270/`
+              })
+            //End of filter the top 6 bestsellerproducts
+        
+        
         //Featured Products
         var featuredproducts = filteredvalue == 'All' ? data.filter(f => f.Category == 'Frappe' ||
-          f.Category == 'Sizzling Meal With Rice' ||
+          f.Category == 'Shakes' ||
           f.Category == 'Snacks') : data.filter(f => f.Category == filteredvalue) 
           featuredproducts.map((i) => 
           {
