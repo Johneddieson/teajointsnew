@@ -22,6 +22,7 @@ subtitle!: any;
 title!: any;
 categories: any[] = []
 recentblog: any[] = []
+postyoumaylike: any[] = []
   constructor(private afauth: AngularFireAuth, private dbservice: DBService,
     private actRoute: ActivatedRoute) 
   { 
@@ -68,9 +69,16 @@ recentblog: any[] = []
        }).value() 
       
        this.categories = groupedbycategory;
+       
+
 
         var recentblogfilter = data.filter(f => f.DateCreatedDuration <= 2)
         this.recentblog = recentblogfilter.splice(0,3);
+
+        
+       var postyoumaylikefilter = data
+       this.postyoumaylike = postyoumaylikefilter
+
       })
   }
 

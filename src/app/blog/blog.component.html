@@ -44,7 +44,7 @@
                             <h4>Recent News</h4>
                             <div class="blog__sidebar__recent">
 
-                                <a href="#" class="blog__sidebar__recent__item" *ngFor="let data of recentblogs">
+                                <a href="/blog-details/{{data.id}}" class="blog__sidebar__recent__item" *ngFor="let data of recentblogs">
                                     <div class="blog__sidebar__recent__item__pic">
                                         <img src="{{data.ImageConvertedForRecent}}" alt="">
                                     </div>
@@ -101,7 +101,7 @@
                                     </ul>
                                     <h5><a href="#">{{data.Title}}</a></h5>
                                     <p>{{data.Description.slice(0,60)}}.......</p>
-                                    <a href="#" class="blog__btn">READ MORE <span class="arrow_right"></span></a>
+                                    <a href="/blog-details/{{data.id}}" class="blog__btn">READ MORE <span class="arrow_right"></span></a>
                                 </div>
                             </div>
                         </div>
