@@ -8,6 +8,8 @@ import { environment } from '../environments/environment.prod'
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
+import { AsyncPipe } from '@angular/common';
+import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,14 @@ import { FooterComponent } from './footer/footer.component';
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore())
   ],
-  providers: [],
+  providers: 
+  [
+    AsyncPipe,
+    {
+      provide: FIREBASE_OPTIONS, 
+      useValue: environment.firebase
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
