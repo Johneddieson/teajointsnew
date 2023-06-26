@@ -1,3 +1,4 @@
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Component, OnInit } from '@angular/core';
 import * as $ from 'jquery';
 import { DBService } from '../services/db.service';
@@ -12,8 +13,28 @@ public curentpath: string = ''
 public hero: string = ''
 public categorylist: any[] = []
 public bannerproduct: any[] = []
-  constructor(private db:DBService) 
+public numbers: number = 0
+public favoritesLength: number = 0
+getCartDetails: any[] = []
+total: number = 0;
+  constructor(
+    private db:DBService,
+    private afauth: AngularFireAuth
+    ) 
   { 
+    this.afauth.authState.subscribe((data) => 
+    {
+        if (data && data.uid)
+        {
+          this.db.getDataById('users', data.uid)
+          .subscribe((data) => 
+          {
+                this.favoritesLength = data.Favorites != undefined || data.Favorites != null ?
+                data.Favorites.length : 0
+          })
+        }
+    })
+  
      // get products list
      this.db.getProducts().subscribe((data)=>
      {
@@ -23,13 +44,31 @@ public bannerproduct: any[] = []
         return category
       }).value() 
         this.categorylist = groupedbycategory
+        console.log("Wew", this.categorylist)
       })
 
     // end of get products list
   }
+  loadCartLength() 
+  {
+    if (sessionStorage.getItem('cart') != null) 
+    {
+      var thearray = [];
+      thearray.push(JSON.parse(sessionStorage.getItem('cart') as any));
+      this.numbers = thearray[0].length;
 
+      this.total = thearray.reduce((acc, val) => {
+        return acc + val.UnitPrice * val.Quantity;
+      }, 0);
+    } 
+    else {
+      this.numbers = 0;
+      this.total = 0;
+    }
+  }
   ngOnInit(): void 
   {
+    this.loadCartLength()
     setInterval(() => 
     {
       this.curentpath = window.location.pathname;

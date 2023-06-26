@@ -56,9 +56,15 @@ constructor(private db: DBService)
             i.DateCreatedChangeFormat = moment(i.DateCreated).format('LL')
             i.DateCreatedMonthAndYear = moment(moment(i.DateCreated).toDate()).format('YYYY-MM')
             i.ImageConvertedForRecent = `${imageConverted[0]}//${imageConverted[2]}/${imageConverted[3]}//-/contrast/3/-/filter/cyren/100/-/preview/100x100/`
+          
+            var datecreated = moment(moment(i.DateCreated).toDate())
+            var datetoday = moment(new Date())
+            var datecreatedDuration = moment.duration(datecreated.diff(datetoday)).asMonths() * -1
+            i.DateCreatedDuration = parseInt(datecreatedDuration.toString()) 
           })
-          var finalizerecentblogs = recentblogs.filter(f => f.DateCreatedMonthAndYear == moment(currentmonthandyear).format('YYYY-MM'))
-          this.recentblogs = finalizerecentblogs;
+          var finalizerecentblogs = recentblogs.filter(f => f.DateCreatedDuration <= 2)
+          var slicerecentblogs = finalizerecentblogs.splice(0, 6);
+          this.recentblogs = slicerecentblogs;
           
           //End of Recent Blogs
 

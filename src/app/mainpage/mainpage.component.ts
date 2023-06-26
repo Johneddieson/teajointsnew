@@ -149,9 +149,12 @@ getProducts(filteredvalue: any)
         allproductsfilterforlatestproduct.map((i) => 
         {
           i.DateCreatedMonthAndYear = moment(moment(i.DateCreated).toDate()).format('YYYY-MM')
+          var datecreated = moment(moment(i.DateCreated).toDate())
+          var datetoday = moment(new Date())
+          var datecreatedDuration = moment.duration(datecreated.diff(datetoday)).asMonths() * -1
+         i.DateCreatedDuration = parseInt(datecreatedDuration.toString()) 
         })
-        var finalizefilterlatestproduct = allproductsfilterforlatestproduct.filter(f => f.DateCreatedMonthAndYear
-           == moment(currentmonthandyear).format('YYYY-MM'))
+        var finalizefilterlatestproduct = allproductsfilterforlatestproduct.filter(f => f.DateCreatedDuration < 2)
            this.latestproducts = finalizefilterlatestproduct
           var thelatest = this.latestproducts.slice(0,6)
           const middleIndex = Math.ceil(thelatest.length / 2);
