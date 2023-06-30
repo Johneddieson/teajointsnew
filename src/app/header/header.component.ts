@@ -17,6 +17,7 @@ public numbers: number = 0
 public favoritesLength: number = 0
 getCartDetails: any[] = []
 total: number = 0;
+tapsilogArray: any[] = []
   constructor(
     private db:DBService,
     private afauth: AngularFireAuth
@@ -44,8 +45,10 @@ total: number = 0;
         return category
       }).value() 
         this.categorylist = groupedbycategory
-        console.log("Wew", this.categorylist)
-      })
+     
+     var tapsifilter = data.filter(f => f.Category == 'Silog Meals' && f.ProductName == 'Tapsilog');
+     this.tapsilogArray = tapsifilter;  
+    })
 
     // end of get products list
   }
@@ -57,7 +60,7 @@ total: number = 0;
       thearray.push(JSON.parse(sessionStorage.getItem('cart') as any));
       this.numbers = thearray[0].length;
 
-      this.total = thearray.reduce((acc, val) => {
+      this.total = thearray[0].reduce((acc:any, val:any) => {
         return acc + val.UnitPrice * val.Quantity;
       }, 0);
     } 
@@ -68,9 +71,9 @@ total: number = 0;
   }
   ngOnInit(): void 
   {
-    this.loadCartLength()
     setInterval(() => 
     {
+      this.loadCartLength()
       this.curentpath = window.location.pathname;
     }, 100)
 

@@ -152,7 +152,7 @@
     $(".product__details__pic__slider").owlCarousel({
         loop: true,
         margin: 20,
-        items: 4,
+        items: 3,
         dots: true,
         smartSpeed: 1200,
         autoHeight: false,

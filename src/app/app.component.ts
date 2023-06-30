@@ -17,6 +17,21 @@ export class AppComponent {
     //  })
 
     // end of get products list
+
+    
+    // this.db.getData('Products').subscribe((data) =>
+    // {
+    //   data.forEach(fe => 
+    //     {
+    //       var obj = 
+    //       {
+    //         HasDiscount: false,
+    //         DiscountValue: 0
+    //       }
+    //       this.db.updateData(fe.id, obj, 'Products').then(() => {}).catch(() => {})
+    //     })
+    // })
+
   }
 
 }
