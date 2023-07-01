@@ -58,5 +58,10 @@ export class DBService {
 
     return collectionData($getDataQuery, {idField: 'id'}) as Observable<any[]>;
   }
+  updateData(id:string, specificData:any, parameter: any)
+  {
+    let $updateDataQuery = doc(this.firestore,`${parameter}/${id}`);
+    return updateDoc($updateDataQuery, specificData);    
+  }
 
 }

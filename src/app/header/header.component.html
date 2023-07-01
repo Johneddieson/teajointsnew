@@ -10,7 +10,8 @@
                 <li><a href="#"><i class="fa fa-heart"></i> <span>{{favoritesLength}}</span></a></li>
                 <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>{{numbers}}</span></a></li>
             </ul>
-            <div class="header__cart__price">item: <span>$150.00</span></div>
+            <!-- <div class="header__cart__price">item: <span>$150.00</span></div> -->
+            <div class="header__cart__price">item: <span>{{(total) | currency: '₱'}}</span></div>
         </div>
         <div class="humberger__menu__widget">
             <!-- <div class="header__top__right__language">
@@ -162,13 +163,13 @@
                             </div>
                         </div>
                     </div> -->
-                    <div>
+                    <div *ngFor="let data of tapsilogArray">
                         <div *ngIf="curentpath == '/'" class="hero__item set-bg" style="background-image: url('https://ucarecdn.com/75838fea-6388-47e9-a753-7e15acac58a2/-/filter/cyren/100/-/preview/3000x3000/');">
                             <div class="hero__text">
-                                <span>BEEF FRESH</span>
-                                <h2>Tapsilog <br />100% Authentic</h2>
+                                <span>{{data.Category}}</span>
+                                <h2>{{data.ProductName}} <br />100% Authentic</h2>
                                 <p>Must try this!</p>
-                                <a href="#" class="primary-btn">ORDER NOW</a>
+                                <a href="/shop-details/{{data.id}}" class="primary-btn">ORDER NOW</a>
                             </div>
                         </div>
                     </div>

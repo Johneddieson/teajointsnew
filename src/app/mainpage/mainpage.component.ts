@@ -4,6 +4,7 @@ import 'owl.carousel';
 import { DBService } from '../services/db.service';
 import * as _ from 'lodash';
 import * as moment from 'moment';
+import { AlertController } from '@ionic/angular';
 @Component({
   selector: 'app-mainpage',
   templateUrl: './mainpage.component.html',
@@ -26,14 +27,14 @@ bestsellerproducts: any[] = []
 firsthalfforbestseller: any[] = []
 secondhalfforbestseller: any[] = []
 get3latestblog: any[] = []
-constructor(private db:DBService) 
+constructor(private db:DBService, private alertCtrl: AlertController) 
   {
     this.getProducts('All');
     this.getBlogs()
   }
   ngOnInit(): void 
   {
-
+    
     (function ($) 
     {
       $(".categories__slider").owlCarousel({
@@ -140,6 +141,7 @@ getProducts(filteredvalue: any)
 
   this.db.getProducts().subscribe((data) => 
     { 
+      var wew = data.filter(f => f.Materials.length > 0);
       let currentmonthandyear = new Date();
         //let halfarray = data.filter((i, idx) => idx < Math.floor(data.length / 2))
         //console.log("the data", data) 
@@ -288,4 +290,406 @@ getBlogs()
       this.get3latestblog = get3latestblog
   })
 }
+
+itemsCart: any = []
+
+  async AddtoCart(data: any) {
+    if (data.Materials.length <= 0) {
+      alert("This product has no condiments.")
+    }
+    else {
+      var cartData = sessionStorage.getItem('cart');
+      let storageDataGet: any = [];
+
+      //no item in the cart yet
+      if (cartData == null) {
+        if (data.Category == 'Milktea') {
+          var alertMilktea = await this.alertCtrl.create({
+            header: 'Please choose a size',
+            inputs: [
+              {
+                type: 'radio',
+                label: 'Small',
+                value: 'Small',
+              },
+              {
+                type: 'radio',
+                label: 'Medium',
+                value: 'Medium',
+              },
+            ],
+            buttons: [
+              {
+                text: 'Go',
+                handler: async (size) => {
+                  if (size == undefined || size == null ||
+                    size == '') {
+                    var nosizeSelected = await this.alertCtrl.create({
+                      message: 'No size selected',
+                      buttons: [
+                        {
+                          text: 'Ok',
+                          role: 'cancel'
+                        }
+                      ]
+                    })
+                    await nosizeSelected.present()
+                  }
+                  else {
+                    var ordernotmilkteaAndfries = this.AddtoCartObject(data, size, '')
+                    storageDataGet.push(ordernotmilkteaAndfries);
+                    sessionStorage.setItem('cart', JSON.stringify(storageDataGet));
+                    data.Quantity = 1;
+                    //this.loadCart();
+                  }
+                },
+              },
+              {
+                text: 'Close',
+                role: 'cancel',
+              },
+            ]
+
+          })
+          await alertMilktea.present()
+        }
+        else if (data.Category == 'Snacks' && (data.ProductName == 'Fries' || data.ProductName == 'Chicken Fingers')) {
+          var alertSnacks = await this.alertCtrl.create({
+            header: 'Please choose a flavor',
+            inputs: [
+              {
+                type: 'radio',
+                label: 'Cheese',
+                value: 'Cheese',
+              },
+              {
+                type: 'radio',
+                label: 'Sour Cream',
+                value: 'Sour Cream',
+              },
+              {
+                type: 'radio',
+                label: 'Bbq',
+                value: 'Bbq',
+              },
+            ],
+            buttons: [
+              {
+                text: 'Go',
+                handler: async (flavor) => {
+                  if (flavor == undefined || flavor == '' ||
+                    flavor == null) {
+                    var noFlavorSelected = await this.alertCtrl.create({
+                      message: 'No flavor selected',
+                      buttons: [
+                        {
+                          text: 'Ok',
+                          role: 'cancel'
+                        }
+                      ]
+                    })
+                    await noFlavorSelected.present()
+                  }
+                  else {
+                    var ordernotmilkteaAndfries = this.AddtoCartObject(data, '', flavor)
+                    storageDataGet.push(ordernotmilkteaAndfries);
+                    sessionStorage.setItem('cart', JSON.stringify(storageDataGet));
+                    data.Quantity = 1;
+                    //this.loadCart();
+                  }
+                },
+              },
+              {
+                text: 'Close',
+                role: 'cancel',
+              },
+            ]
+          })
+          await alertSnacks.present()
+        }
+        else {
+          var ordernotmilkteaAndfries = this.AddtoCartObject(data, '', '')
+          storageDataGet.push(ordernotmilkteaAndfries);
+          sessionStorage.setItem('cart', JSON.stringify(storageDataGet));
+          data.Quantity = 1;
+          //this.loadCart();  
+          //this.loadCart();
+          //this.cartItemFunc();  
+        }
+      }
+      //already have an items in the cart
+      else {
+        if (data.Category == 'Milktea') {
+          var alertMilktea = await this.alertCtrl.create({
+            header: 'Please choose a size',
+            inputs: [
+              {
+                type: 'radio',
+                label: 'Small',
+                value: 'Small',
+              },
+              {
+                type: 'radio',
+                label: 'Medium',
+                value: 'Medium',
+              },
+            ],
+            buttons: [
+              {
+                text: 'Go',
+                handler: async (size) => {
+                  if (size == '' || size == undefined ||
+                    size == null) {
+                    var noSizeSelected = await this.alertCtrl.create({
+                      message: 'No size selected',
+                      buttons: [
+                        {
+                          text: 'Ok',
+                          role: 'cancel'
+                        }
+                      ]
+                    })
+                    await noSizeSelected.present()
+                  }
+                  else {
+                    var id = data.id;
+                    let index: number = -1;
+                    this.itemsCart = JSON.parse(sessionStorage.getItem('cart') as any);
+
+                    for (let i = 0; i < this.itemsCart.length; i++) {
+                      if (id == this.itemsCart[i].id && this.itemsCart[i].ProductName == `${data.ProductName} ${size}`) {
+                        this.itemsCart[i].Quantity = data.Quantity;
+                        data.Quantity = 1;
+                        index = i;
+                        break;
+                      }
+                    }
+                    if (index == -1) {
+                      //if cart session is not equal to null and the added product is not yet existing  
+                      var cartConvertToParse = JSON.parse(cartData as any);
+
+                      if (cartConvertToParse.length >= 10) {
+                        var orderLimitAlert = await this.alertCtrl.create({
+                          message: 'Orders should be 10 maximum.',
+                          buttons:
+                            [
+                              {
+                                text: 'Ok',
+                                role: 'cancel'
+                              }
+                            ]
+                        })
+                        await orderLimitAlert.present();
+                      }
+                      else {
+                        var ordernotmilkteaAndfries = this.AddtoCartObject(data, size, '')
+                        this.itemsCart.push(ordernotmilkteaAndfries);
+                        sessionStorage.setItem('cart', JSON.stringify(this.itemsCart));
+                      }
+                      data.Quantity = 1;
+                    }
+                    else {
+                      //if cart session is not equal to null and the added product is existing
+                      sessionStorage.setItem('cart', JSON.stringify(this.itemsCart));
+                      data.Quantity = 1;
+                    }
+                    data.Quantity = 1;
+                    //this.loadCart();
+                  }
+                },
+              },
+              {
+                text: 'Close',
+                role: 'cancel',
+              },
+            ]
+
+          })
+          await alertMilktea.present()
+        }
+        else if (data.Category == 'Snacks' && (data.ProductName == 'Fries' || data.ProductName == 'Chicken Fingers')) {
+          var alertSnacks = await this.alertCtrl.create({
+            header: 'Please choose a flavor',
+            inputs: [
+              {
+                type: 'radio',
+                label: 'Cheese',
+                value: 'Cheese',
+              },
+              {
+                type: 'radio',
+                label: 'Sour Cream',
+                value: 'Sour Cream',
+              },
+              {
+                type: 'radio',
+                label: 'Bbq',
+                value: 'Bbq',
+              },
+            ],
+            buttons: [
+              {
+                text: 'Go',
+                handler: async (flavor) => {
+                  if (flavor == undefined || flavor == ''
+                    || flavor == null) {
+                    var noSizeSelected = await this.alertCtrl.create({
+                      message: 'No flavor selected',
+                      buttons: [
+                        {
+                          text: 'Ok',
+                          role: 'cancel'
+                        }
+                      ]
+                    })
+                    await noSizeSelected.present()
+                  }
+                  else {
+                    var id = data.id;
+                    let index: number = -1;
+                    this.itemsCart = JSON.parse(sessionStorage.getItem('cart') as any);
+
+                    for (let i = 0; i < this.itemsCart.length; i++) {
+                      if (id == this.itemsCart[i].id && this.itemsCart[i].ProductName == `${data.ProductName} ${flavor}`) {
+                        this.itemsCart[i].Quantity = data.Quantity;
+                        data.Quantity = 1;
+                        index = i;
+                        break;
+                      }
+                    }
+                    if (index == -1) {
+                      //if cart session is not equal to null and the added product is not yet existing  
+
+                      var cartConvertToParse = JSON.parse(cartData as any);
+
+                      if (cartConvertToParse.length >= 10) {
+                        var orderLimitAlert = await this.alertCtrl.create({
+                          message: 'Orders should be 10 maximum.',
+                          buttons: [
+                            {
+                              text: 'Ok',
+                              role: 'cancel',
+                            },
+                          ],
+                        });
+                        await orderLimitAlert.present();
+                      }
+                      else {
+                        var ordernotmilkteaAndfries = this.AddtoCartObject(data, '', flavor)
+                        this.itemsCart.push(ordernotmilkteaAndfries);
+                        sessionStorage.setItem('cart', JSON.stringify(this.itemsCart));
+                      }
+                      data.Quantity = 1;
+                    }
+                    else {
+                      //if cart session is not equal to null and the added product is existing
+                      sessionStorage.setItem('cart', JSON.stringify(this.itemsCart));
+                      data.Quantity = 1;
+                    }
+                    data.Quantity = 1;
+                    //this.loadCart();
+                    //this.cartItemFunc(); 
+                  }
+                },
+              },
+              {
+                text: 'Close',
+                role: 'cancel',
+              },
+            ]
+          })
+          await alertSnacks.present()
+        }
+        else {
+          var id = data.id;
+          let index: number = -1;
+          this.itemsCart = JSON.parse(sessionStorage.getItem('cart') as any);
+
+
+          for (let i = 0; i < this.itemsCart.length; i++) {
+            if (id == this.itemsCart[i].id && this.itemsCart[i].ProductName == data.ProductName) {
+              this.itemsCart[i].Quantity = data.Quantity;
+              data.Quantity = 1;
+              index = i;
+              break;
+            }
+          }
+          if (index == -1) {
+            //if cart session is not equal to null and the added product is not yet existing  
+            var cartConvertToParse = JSON.parse(cartData);
+
+            if (cartConvertToParse.length >= 10) {
+              var orderLimitAlert = await this.alertCtrl.create({
+                message: 'Orders should be 10 maximum.',
+                buttons: [
+                  {
+                    text: 'Ok',
+                    role: 'cancel',
+                  },
+                ],
+              });
+              await orderLimitAlert.present();
+            }
+            else {
+              var ordernotmilkteaAndfries = this.AddtoCartObject(data, '', '')
+              this.itemsCart.push(ordernotmilkteaAndfries);
+              sessionStorage.setItem('cart', JSON.stringify(this.itemsCart));
+            }
+            data.Quantity = 1;
+          }
+          else {
+            //if cart session is not equal to null and the added product is existing
+            sessionStorage.setItem('cart', JSON.stringify(this.itemsCart));
+            data.Quantity = 1;
+          }
+        }
+      }
+      //this.loadCart();
+      //this.cartItemFunc(); 
+    }
+  }    
+
+
+  
+  AddtoCartObject(data: any, size: any, flavor: string) 
+  {
+    var concatenatedArrays;
+    if (flavor.startsWith("B") || flavor.startsWith("S") || flavor.startsWith("C"))
+    {
+      var flavorMaterial = data.Materials.filter((f: any) => f.itemName.toLowerCase().includes(flavor.toLowerCase()))
+       var oilMaterial = data.Materials.filter((f: any) => f.itemName.toLowerCase().includes('oil'))
+      concatenatedArrays = flavorMaterial.concat(oilMaterial)
+      //console.log("fries and chicken fingers")
+    }
+    else 
+    {
+      //console.log("not fries and chicken fingers")
+      concatenatedArrays = data.Materials 
+    }
+    concatenatedArrays.map((i:any, index:any) => 
+    {
+      i.Quantity = data.Quantity
+    })
+    //console.log("concatenated array", concatenatedArrays)   
+    var ordernotmilkteaAndfries = Object.assign({}, data, {
+          Materials: concatenatedArrays,
+           Category: data.Category,
+           Description: data.Description,
+           GramsPerOrder: data.Category != 'Milktea' || data.Category == 'Snacks' ?  data.GramsPerOrder 
+           : size == 'Small' ? data.GramsPerOderSmall : data.GramsPerOderMedium,
+           ImageUrl: data.ImageUrl,
+           ProductName: data.Category != 'Milktea' ? data.ProductName == 'Fries' || 
+           data.ProductName == 'Chicken Fingers' 
+           ? `${data.ProductName} ${flavor}` : data.ProductName 
+           : `${data.ProductName} ${size}`,
+           Quantity: data.Quantity,
+           Stock: data.Stock,
+           UnitPrice: data.Category != 'Milktea' ||  data.Category == 'Snacks' ? data.UnitPrice 
+           : size == 'Small' ? data.SmallPrice : data.MediumPrice,
+           id: data.id
+   })
+   //console.log("addtocartobjectmethod", ordernotmilkteaAndfries)
+   return ordernotmilkteaAndfries
+  }
+  
 }

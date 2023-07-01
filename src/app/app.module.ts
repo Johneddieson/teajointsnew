@@ -10,6 +10,10 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { AsyncPipe } from '@angular/common';
 import { FIREBASE_OPTIONS } from '@angular/fire/compat';
+import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { RouteReuseStrategy } from '@angular/router';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 
 @NgModule({
   declarations: [
@@ -18,10 +22,12 @@ import { FIREBASE_OPTIONS } from '@angular/fire/compat';
     FooterComponent
   ],
   imports: [
+    IonicModule.forRoot(),
     BrowserModule,
     AppRoutingModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(() => getFirestore())
+    provideFirestore(() => getFirestore()),
+    NgbModule
   ],
   providers: 
   [
@@ -30,6 +36,7 @@ import { FIREBASE_OPTIONS } from '@angular/fire/compat';
       provide: FIREBASE_OPTIONS, 
       useValue: environment.firebase
     },
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
 })
