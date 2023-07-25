@@ -1,0 +1,74 @@
+
+    <!-- Breadcrumb Section Begin -->
+    <!-- <section class="breadcrumb-section set-bg" style="background-image: url('assets/img/breadcrumb.jpg');">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb__text">
+                        <h2>Contact Us</h2>
+                        <div class="breadcrumb__option">
+                            <a href="/">Home</a>
+                            <span>Contact Us</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> -->
+    <!-- Breadcrumb Section End -->
+
+    <div class="page-header">
+        <h3 class="page-title"> <a href="/adminhome" type="button"><i class="mdi mdi-keyboard-backspace"></i></a> </h3>
+      </div>
+
+    <!-- Contact Form Begin -->
+    <div class="contact-form spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="contact__form__title">
+                        <h2>
+                            <img src="{{imageurl}}"/>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            
+            <form action="#">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                        <input type="text" placeholder="Category" readonly value="{{category}}">
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <input type="text" placeholder="Name" readonly value="{{productname}}">
+                    </div>
+
+                    <div class="col-lg-6 col-md-6" *ngIf="category != 'Milktea'">
+                        <input type="number" placeholder="Unit Price" value="{{unitprice}}">
+                    </div>
+
+                    <div class="col-lg-6 col-md-6" *ngIf="category == 'Milktea'">
+                        <input type="number" placeholder="Small Price" value="{{smallprice}}">
+                    </div>
+                    <div class="col-lg-6 col-md-6" *ngIf="category == 'Milktea'">
+                        <input type="number" placeholder="Medium Price" value="{{mediumprice}}">
+                    </div>
+
+                    <div class="col-lg-12 text-center">
+                        <textarea placeholder="Description" [value]="description"></textarea>
+                    </div>
+
+                    <div class="col-lg-12 text-center">
+                      <ion-select class="form-control" placeholder="Click this box to select condiments" [multiple]="true">
+                        <ion-select-option *ngFor="let data of condiments" [value]="data.id">{{data.ItemName}}</ion-select-option>
+                      </ion-select>
+                      <br>
+                      <br>
+                        <button type="submit" class="site-btn">SAVE CHANGES</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Contact Form End -->
+

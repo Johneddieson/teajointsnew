@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DBService } from './services/db.service';
 
 @Component({
@@ -6,8 +6,10 @@ import { DBService } from './services/db.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'wingsandsnacks';
+  currentpath: string = ''
+  isadmin: boolean = false
   constructor(private db:DBService)
   {
     // get products list
@@ -17,6 +19,15 @@ export class AppComponent {
     //  })
 
     // end of get products list
+  }
+
+  ngOnInit(): void {
+    
+    setInterval(() => 
+    {
+      this.currentpath = window.location.pathname;
+      this.isadmin = this.currentpath.includes('/admin')
+    }, 100)
   }
 
 }

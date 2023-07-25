@@ -8,9 +8,9 @@
         <div class="humberger__menu__cart">
             <ul>
                 <li><a href="#"><i class="fa fa-heart"></i> <span>{{favoritesLength}}</span></a></li>
-                <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>{{numbers}}</span></a></li>
+                <li><a href="/cart"><i class="fa fa-shopping-bag"></i> <span>{{numbers}}</span></a></li>
             </ul>
-            <div class="header__cart__price">item: <span>$150.00</span></div>
+            <div class="header__cart__price">item: <span>{{(total) | currency: '₱'}}</span></div>
         </div>
         <div class="humberger__menu__widget">
             <!-- <div class="header__top__right__language">
@@ -33,14 +33,6 @@
             <ul>
                 <li class="{{curentpath == '/' ? 'active' : ''}}"><a routerLink="/">Home</a></li>
                 <li class="{{curentpath == '/shop' ? 'active' : ''}}"><a routerLink="/shop">Shop</a></li>
-                <!-- <li><a href="#">Pages</a>
-                    <ul class="header__menu__dropdown">
-                        <li><a href="./shop-details.html">Shop Details</a></li>
-                        <li><a href="./shoping-cart.html">Shoping Cart</a></li>
-                        <li><a href="./checkout.html">Check Out</a></li>
-                        <li><a href="./blog-details.html">Blog Details</a></li>
-                    </ul>
-                </li> -->
                 <li class="{{curentpath == '/blog' ? 'active' : ''}}"><a routerLink="/blog">Blog</a></li>
                 <li class="{{curentpath == '/contact' ? 'active' : ''}}"><a routerLink="/contact">Contact</a></li>
             </ul>
@@ -116,7 +108,7 @@
                     <div class="header__cart">
                         <ul>
                             <li><a href="#"><i class="fa fa-heart"></i> <span>{{favoritesLength}}</span></a></li>
-                            <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>{{numbers}}</span></a></li>
+                            <li><a href="/cart"><i class="fa fa-shopping-bag"></i> <span>{{numbers}}</span></a></li>
                         </ul>
                         <div class="header__cart__price">item: <span>{{(total) | currency: '₱'}}</span></div>
                     </div>
@@ -140,7 +132,7 @@
                             <span>All Category</span>
                         </div>
                         <ul>
-                            <li *ngFor="let data of categorylist"><a href="#">{{data}}</a></li>
+                            <li *ngFor="let data of categorylist"><a href="/shop/{{data}}">{{data}}</a></li>
                         </ul>
                     </div>
                 </div>
@@ -168,7 +160,7 @@
                                 <span>BEEF FRESH</span>
                                 <h2>Tapsilog <br />100% Authentic</h2>
                                 <p>Must try this!</p>
-                                <a href="#" class="primary-btn">ORDER NOW</a>
+                                <a type="button" routerLink="/shop-details/wcbympLhUtQ7HObvbkpJ" class="primary-btn">ORDER NOW</a>
                             </div>
                         </div>
                     </div>

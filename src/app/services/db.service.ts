@@ -51,6 +51,12 @@ export class DBService {
     const q = query($getDataQuery, where('id', 'in', arraystring));
     return collectionData(q) as Observable<any[]>;
   }
+  getDataWhereString(parameter: any, value: any)
+  {
+    let $getDataQuery = collection(this.firestore,`${parameter}`);
+    const q = query($getDataQuery, where('Category', '==', value));
+    return collectionData(q, {idField: 'id'}) as Observable<any[]>;
+  }
 
   getData(parameter: any)
   {

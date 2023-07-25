@@ -1,0 +1,101 @@
+
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg" style="background-image: url('../assets/img/breadcrumb.jpg');">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb__text">
+                        <h2>Cart</h2>
+                        <div class="breadcrumb__option">
+                            <a href="/">Home</a>
+                            <span>Cart</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Shoping Cart Section Begin -->
+    <section class="shoping-cart spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="shoping__cart__table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="shoping__product">Products</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let data of getCartDetails">
+                                    <td class="shoping__cart__item">
+                                        <img src="{{data.ImageConverted}}" alt="">
+                                        <h5>{{data.ProductName}}</h5>
+                                    </td>
+                                    <td class="shoping__cart__price">
+                                        {{data.UnitPrice | currency: '₱'}}
+                                    </td>
+                                    <td class="shoping__cart__quantity">
+                                        <div class="quantity">
+                                            <div class="pro-qty">
+                                                <span class="dec qtybtn" (click)="dec(data.id, data.Quantity)">-</span>
+                                                <input type="text" readonly value="{{data.Quantity}}">
+                                                <span class="inc qtybtn" (click)="inc(data.id, data.Quantity)">+</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="shoping__cart__total">
+                                        {{computeSpecificProductTotal(data.UnitPrice, data.Quantity)  | currency: '₱'}}
+                                    </td>
+                                    <td class="shoping__cart__item__close">
+                                        <span class="icon_close" (click)="singleDelete(data)"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="shoping__cart__btns">
+                        <a href="/shop" class="primary-btn cart-btn cart-btn-right">CONTINUE SHOPPING</a>
+                        <!-- <a href="#" class="primary-btn cart-btn cart-btn-right"><span class="icon_loading"></span>
+                            Upadate Cart</a> -->
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="shoping__continue">
+                        <div class="shoping__discount">
+                            <h5>Payment Method</h5>
+                                <select class="form-control" [(ngModel)]="PaymentMethod">
+                                    <option value="None" disabled selected>SELECT PAYMENT METHOD</option>
+                                    <option value="Cash">CASH</option>
+                                    <option value="Online Payment">ONLINE PAYMENT</option>
+                                </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="shoping__checkout">
+                        <h5>Cart Total</h5>
+                        <ul>
+                            <!-- <li>Subtotal <span>$454.98</span></li> -->
+                            <li>Total Amount<span>{{total| currency: '₱' }}</span></li>
+                        </ul>
+                        <a *ngIf="getCartDetails.length > 0 && PaymentMethod != 'None'" type="button"  class="primary-btn" (click)="ordernow()">ORDER NOW</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Shoping Cart Section End -->
+

@@ -1,0 +1,65 @@
+
+    <div class="container-scroller">
+      
+      <div class="container-fluid page-body-wrapper">
+    
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              <h3 class="page-title"> <a href="/adminhome" type="button"><i class="mdi mdi-keyboard-backspace"></i></a> </h3>
+            </div>
+            <br>
+            
+            <div class="row">
+                
+              <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Products</h4>
+                    <div class="table-responsive">
+                      <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th> Image </th>
+                            <th> Category </th>
+                            <th> Name </th>
+                            <th> Unit Price </th>
+                            <th> Action </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let data of products" style="cursor: pointer;" routerLink="/admineditproduct/{{data.id}}">
+                            <td class="py-1">
+                              <img src="{{data.ImageConverted}}" alt="image" />
+                            </td>
+                            <td> {{data.Category}} </td>
+                            <td>
+                                {{data.ProductName}}
+                            </td>
+                            <td> 
+                                <!-- {{data.Category != 'Milktea' ? (data.UnitPrice | currency: '₱') 
+                                : 'SM- ' + (data.SmallPrice | currency: '₱')   + 'MD- ' + (data.MediumPrice | currency: '₱')}} 
+                                 -->
+                                <!-- {{productPrice(data)}} -->
+                                {{data.Category != 'Milktea' ? (data.UnitPrice | currency: '₱') : ''}}
+                                 {{data.Category == 'Milktea' ? 'SM -' +  (data.SmallPrice | currency: '₱') : ''}}
+                                 <br>
+                                 {{data.Category == 'Milktea' ? 'MD -' +  (data.MediumPrice | currency: '₱') : ''}}
+                            </td>
+                            <td> May 15, 2015 </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    
