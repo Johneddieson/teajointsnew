@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DBService } from '../services/db.service';
-import { AlertController } from '@ionic/angular';
-import { ModalDismissReasons, NgbDatepickerModule, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AlertController, IonModal } from '@ionic/angular';
 
 @Component({
   selector: 'app-editproducts',
@@ -22,6 +21,8 @@ closeResult = '';
 formModal: any;
 specificproductcondiments: any[] = []
 condiments: any[] = []
+materialmodel: any;
+arraymaterial: any[] = []
   constructor
   (
     public actRoute: ActivatedRoute,
@@ -37,14 +38,18 @@ condiments: any[] = []
 
   ngOnInit(): void 
   {
-    
+    var wew = window as any
+    this.formModal = new wew.bootstrap.Modal
+    (
+      document.getElementById("exampleModal")
+    )
   }
   getSpecificProduct()
   {
     this.db.getDataById('Products', this.productId)
     .subscribe((data) => 
     {
-      console.log("specific data", data)
+     // console.log("specific data", data)
       this.category = data.Category;
       this.productname = data.ProductName
       this.imageurl = data.ImageUrl;
@@ -53,7 +58,9 @@ condiments: any[] = []
       this.smallprice = data.SmallPrice;
       this.mediumprice = data.MediumPrice;
       this.specificproductcondiments = data.Materials
-      console.log("condiments", this.specificproductcondiments)
+      this.materialmodel = this.specificproductcondiments.length <= 0 ? [] : this.specificproductcondiments.map(function(e) {return e.itemId})
+      
+      //console.log("condiments", this.specificproductcondiments)
     }) 
   }
 
@@ -61,9 +68,48 @@ getMaterials()
 {
   this.db.getData('Materials').subscribe((data) => 
   {
+    data = data.sort((a, b) => a.Itemname.localeCompare(b.Itemname))
     //console.log("materials", data)
     this.condiments = data
   })
 }
+savechanges()
+{
+  console.log("Wew", this.materialmodel);
+}
+setmaterialstoeditgramsperoder()
+{
+  this.arraymaterial = this.materialmodel;
+  this.arraymaterial = this.arraymaterial.map((i, index) => 
+  {
+      return Object.assign({}, 
+        {
+          itemId: i,
+          gramsperordersmall : this.specificproductcondiments.filter(f => f.itemId === i).length > 0 ? 
+          parseInt(this.specificproductcondiments.filter(f => f.itemId === i).map(function (e) {return e.gramsperordersmall}).toString())
+          : 0,
+          gramsperordermedium : this.specificproductcondiments.filter(f => f.itemId === i).length > 0 ? 
+          parseInt(this.specificproductcondiments.filter(f => f.itemId === i).map(function (e) {return e.gramsperordermedium}).toString())
+          : 0,
+          gramsperorder :  this.specificproductcondiments.filter(f => f.itemId === i).length > 0 ? 
+          parseInt(this.specificproductcondiments.filter(f => f.itemId === i).map(function (e) {return e.gramsperorder}).toString())
+          : 0,  
+        })
+  })
+  this.arraymaterial.map((i, index) => 
+  {
+    this.db.getDataById('Materials', i.itemId).subscribe((data) => 
+    {
+      i.itemName =  data.Itemname;
+    })    
+  })
+  console.log("array", this.arraymaterial)
+}
 
+
+async openModal() 
+{
+  this.setmaterialstoeditgramsperoder()
+ await this.formModal.show()
+}
 }

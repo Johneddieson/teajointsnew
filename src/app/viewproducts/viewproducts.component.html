@@ -23,12 +23,12 @@
                             <th> Image </th>
                             <th> Category </th>
                             <th> Name </th>
-                            <th> Unit Price </th>
+                            <th> S.R.P </th>
                             <th> Action </th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr *ngFor="let data of products" style="cursor: pointer;" routerLink="/admineditproduct/{{data.id}}">
+                          <tr *ngFor="let data of products">
                             <td class="py-1">
                               <img src="{{data.ImageConverted}}" alt="image" />
                             </td>
@@ -46,7 +46,7 @@
                                  <br>
                                  {{data.Category == 'Milktea' ? 'MD -' +  (data.MediumPrice | currency: '₱') : ''}}
                             </td>
-                            <td> May 15, 2015 </td>
+                            <td> <a href="/admineditproduct/{{data.id}}" type="button" class="btn btn-secondary btn-sm">Edit</a> </td>
                           </tr>
                         </tbody>
                       </table>
