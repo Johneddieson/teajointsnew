@@ -1,13 +1,8 @@
-
-
-
-
-
+<div class="background">
 <div class="page-header">
     <h3 class="page-title"> <a href="/adminhome" type="button"><i class="mdi mdi-keyboard-backspace"></i></a> </h3>
   </div>
 
-  
 <div class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" id="exampleModal"
 >
     <div class="modal-dialog modal-dialog-centered">
@@ -90,11 +85,9 @@
         <form action="#">
             <div class="row">
               <div class="col-lg-6 col-md-6">
-                <input type="file" #inputFile (change)="fileChanged($event)" accept="image/*"/>
+                <input type="file" class="form-control" #inputFile (change)="fileChanged($event)" accept="image/*"/>
             </div>
                 <div class="col-lg-6 col-md-6">
-                    <!-- <input type="text" placeholder="Category"
-                    [(ngModel)]="categorymodel" [ngModelOptions]="{standalone: true}"> -->
                     <select class="form-control" [(ngModel)]="categorymodel" [ngModelOptions]="{standalone: true}"
                     (change)="handleChange($event)">
                         <option disabled selected value="">Choose category</option>    
@@ -149,3 +142,4 @@
     </div>
 </div>
 
+</div>

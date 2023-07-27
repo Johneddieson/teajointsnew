@@ -1,0 +1,91 @@
+<div class="background">
+    <div class="container-scroller">
+      
+      <div class="container-fluid page-body-wrapper">
+          
+        <div class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" id="exampleModal"
+        >
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                      <h6 class="modal-title fs-5" id="exampleModalLabel">Condiments
+                      </h6>
+                      <button type="button" ctslass="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                      (click)="closeModal()">
+                        <i class="mdi mdi-window-close"></i>
+                      </button>
+                    </div>
+                    <form>
+                    <div class="modal-body" *ngFor="let data of specificmaterial">
+                       
+                       
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Item name :</label>
+                            <input type="text" readonly class="form-control" value="{{data.Itemname}}">
+                          </div>
+    
+                          
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">Stock on hand :</label>
+                            <input type="number" class="form-control"
+                            placeholder="Input stock on hand..." value="{{data.Stock}}"
+                            [(ngModel)]="data.Stock" [ngModelOptions]="{standalone: true}">
+                          </div>
+                    </div>
+                    <div class="modal-footer">
+                        <!-- (click)="savechanges()" -->
+                      <button type="button" class="btn btn-success" (click)="savechanges()">Save changes</button>
+                    </div>
+                </form>
+                  </div>
+            </div>
+          </div>
+    
+
+
+
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              <h3 class="page-title"> <a href="/adminhome" type="button"><i class="mdi mdi-keyboard-backspace"></i></a> </h3>
+            </div>
+            <br>
+            
+            <div class="row"> 
+                <div class="col-lg-12 grid-margin stretch-card">
+                    <div class="card">
+                      <div class="card-body">
+                        <!-- (keyup)="searchEvent($event)" -->
+                        <h6 class="card-title"><input class="form-control col-lg-3 col-md-3" type="text" (keyup)="searchEvent($event)" placeholder="Search item name..."/></h6>
+                        <div class="table-responsive">
+                          <table class="table table-bordered">
+                            <thead>
+                              <tr>
+                                <th> Item name </th>
+                                <th> On hand </th>
+                                <th> Action </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let data of materials">
+                                <td> {{data.Itemname}} </td>
+                                <td style="text-align: right;"> {{data.Stock}} </td>
+                                <td>
+                                    <a type="button" (click)="openModal(data)" class="btn btn-secondary btn-sm col-lg-12 col-md-12">Edit</a>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+          </div>
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+  </div>
+    
