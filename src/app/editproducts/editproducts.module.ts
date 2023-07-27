@@ -5,7 +5,7 @@ import { EditproductsRoutingModule } from './editproducts-routing.module';
 import { EditproductsComponent } from './editproducts.component';
 import { IonicModule } from '@ionic/angular';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -16,7 +16,8 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     EditproductsRoutingModule,
     FormsModule,
-     IonicModule 
+     IonicModule,
+     ReactiveFormsModule 
   ]
 })
 export class EditproductsModule { }

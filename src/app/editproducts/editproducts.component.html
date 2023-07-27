@@ -13,9 +13,10 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="exampleModalLabel">Condiments
-                  </h1>
-                  <button type="button" ctslass="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                  <h6 class="modal-title fs-5" id="exampleModalLabel">Condiments
+                  </h6>
+                  <button type="button" ctslass="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                  (click)="closeModal()">
                     <i class="mdi mdi-window-close"></i>
                   </button>
                 </div>
@@ -23,30 +24,55 @@
                 <div class="modal-body">
                    
                    
-                    <div class="mb-3" *ngFor="let mat of arraymaterial" [hidden]="category == 'Milktea'">
-                        <label for="message-text" class="col-form-label">{{mat.itemName}}:</label>
-                        <input type="number" class="form-control" value="{{mat.gramsperorder}}">
+                    <div class="mb-3" *ngFor="let mat of arraymaterial" [hidden]="categorymodel == 'Milktea'">
+                        <label for="message-text" class="col-form-label">{{mat.itemName}} grams per order:</label>
+                        <input type="number" class="form-control" value="{{mat.gramsperorder}}"
+                        placeholder="Input grams per order..."
+                        (change)="updateGramsPerOrderEvent($event, mat)">
                       </div>
 
                       
-                    <div class="mb-3" *ngFor="let mat of arraymaterial" [hidden]="category != 'Milktea'">
-                        <label for="message-text" class="col-form-label">{{mat.itemName}} Small:</label>
-                        <input type="number" class="form-control" value="{{mat.gramsperordersmall}}">
+                    <div class="mb-3" *ngFor="let mat of arraymaterial" [hidden]="categorymodel != 'Milktea'">
+                        <label for="message-text" class="col-form-label">{{mat.itemName}} Small grams per order :</label>
+                        <input type="number" class="form-control" value="{{mat.gramsperordersmall}}"
+                        placeholder="Input grams per order small..."
+                        (change)="updateGramsPerOrderSmallEvent($event, mat)">
                       </div>
 
                       
-                    <div class="mb-3" *ngFor="let mat of arraymaterial" [hidden]="category != 'Milktea'">
-                        <label for="message-text" class="col-form-label">{{mat.itemName}} Medium:</label>
-                        <input type="number" class="form-control" value="{{mat.gramsperordermedium}}">
+                    <div class="mb-3" *ngFor="let mat of arraymaterial" [hidden]="categorymodel != 'Milktea'">
+                        <label for="message-text" class="col-form-label">{{mat.itemName}} Medium grams per order:</label>
+                        <input type="number" class="form-control" value="{{mat.gramsperordermedium}}"
+                        placeholder="Input grams per order medium..."
+                        (change)="updateGramsPerOrderMediumEvent($event, mat)">
                       </div>
 
 
                 </div>
                 <div class="modal-footer">
-                  <button type="submit" class="btn btn-success">Submit</button>
+                  <button type="submit" class="btn btn-success" [disabled]="disableSaveChangesButton" (click)="savechanges()">Submit</button>
                 </div>
             </form>
               </div>
+        </div>
+      </div>
+
+
+      <div class="modal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" id="errorModal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">This fields must be in the correct format</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="modalerror">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -56,33 +82,42 @@
                 <div class="col-lg-12">
                     <div class="contact__form__title">
                         <h2>
-                            <img src="{{imageurl}}"/>
+                            <img src="{{photoLink}}" class="camera"/>
                         </h2>
                     </div>
                 </div>
             </div>
             <form action="#">
                 <div class="row">
+                  <div class="col-lg-6 col-md-6">
+                    <input type="file" #inputFile (change)="fileChanged($event)" accept="image/*"/>
+                </div>
                     <div class="col-lg-6 col-md-6">
-                        <input type="text" placeholder="Category" readonly value="{{category}}">
+                        <input type="text" placeholder="Category" readonly value="{{categorymodel}}"
+                        [(ngModel)]="categorymodel" [ngModelOptions]="{standalone: true}">
                     </div>
                     <div class="col-lg-6 col-md-6">
-                        <input type="text" placeholder="Name" readonly value="{{productname}}">
+                        <input type="text" placeholder="Name" readonly value="{{productnamemodel}}"
+                        [(ngModel)]="productnamemodel" [ngModelOptions]="{standalone: true}">
                     </div>
 
                     <div class="col-lg-6 col-md-6" *ngIf="category != 'Milktea'">
-                        <input type="number" placeholder="Unit Price" value="{{unitprice}}">
+                        <input type="number" placeholder="Unit Price" value="{{unitpricemodel}}"
+                        [(ngModel)]="unitpricemodel" [ngModelOptions]="{standalone: true}">
                     </div>
 
                     <div class="col-lg-6 col-md-6" *ngIf="category == 'Milktea'">
-                        <input type="number" placeholder="Small Price" value="{{smallprice}}">
+                        <input type="number" placeholder="Small Price" value="{{smallpricemodel}}"
+                        [(ngModel)]="smallpricemodel" [ngModelOptions]="{standalone: true}">
                     </div>
                     <div class="col-lg-6 col-md-6" *ngIf="category == 'Milktea'">
-                        <input type="number" placeholder="Medium Price" value="{{mediumprice}}">
+                        <input type="number" placeholder="Medium Price" value="{{mediumpricemodel}}"
+                        [(ngModel)]="mediumpricemodel" [ngModelOptions]="{standalone: true}">
                     </div>
 
                     <div class="col-lg-12 text-center">
-                        <textarea placeholder="Description" [value]="description"></textarea>
+                        <textarea placeholder="Description" [value]="descriptionmodel"
+                        [(ngModel)]="descriptionmodel" [ngModelOptions]="{standalone: true}"></textarea>
                     </div>
 
                     <div class="col-lg-12 text-center">
@@ -92,7 +127,7 @@
                       </ion-select>
                       <br>
                       <br>
-                        <button type="button" class="site-btn" (click)="openModal()">Save</button>
+                        <button type="button" class="site-btn" (click)="openModal()">Edit Condiments Grams Per Order</button>
                     </div>
                 </div>
             </form>

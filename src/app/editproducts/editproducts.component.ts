@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DBService } from '../services/db.service';
-import { AlertController, IonModal } from '@ionic/angular';
+import { AlertController, IonModal, LoadingController } from '@ionic/angular';
+import { HttpClient } from '@angular/common/http';
+import { throttle } from 'lodash';
 
 @Component({
   selector: 'app-editproducts',
@@ -23,11 +25,26 @@ specificproductcondiments: any[] = []
 condiments: any[] = []
 materialmodel: any;
 arraymaterial: any[] = []
+photoLink: any
+withPhoto: boolean = false
+categorymodel: any;
+productnamemodel: any;
+unitpricemodel: any;
+smallpricemodel: any;
+mediumpricemodel: any;
+descriptionmodel: any;
+public isValid: boolean = false
+  public errMsg: string = ''
+  public validationMessageObject: object = {}
+  errorModal: any;
+  disableSaveChangesButton: boolean = false
   constructor
   (
     public actRoute: ActivatedRoute,
     public db: DBService,
-    public alertController: AlertController
+    public alertController: AlertController,
+    public http: HttpClient,
+    public loadingController: LoadingController
   ) 
   {
 
@@ -38,10 +55,15 @@ arraymaterial: any[] = []
 
   ngOnInit(): void 
   {
-    var wew = window as any
-    this.formModal = new wew.bootstrap.Modal
+    var bootstrapmodal = window as any
+    this.formModal = new bootstrapmodal.bootstrap.Modal
     (
       document.getElementById("exampleModal")
+    )
+
+    this.errorModal = new bootstrapmodal.bootstrap.Modal
+    (
+      document.getElementById("errorModal")
     )
   }
   getSpecificProduct()
@@ -49,18 +71,15 @@ arraymaterial: any[] = []
     this.db.getDataById('Products', this.productId)
     .subscribe((data) => 
     {
-     // console.log("specific data", data)
-      this.category = data.Category;
-      this.productname = data.ProductName
-      this.imageurl = data.ImageUrl;
-      this.description = data.Description
-      this.unitprice = data.UnitPrice;
-      this.smallprice = data.SmallPrice;
-      this.mediumprice = data.MediumPrice;
+      this.categorymodel = data.Category;
+      this.productnamemodel = data.ProductName
+      this.photoLink = data.ImageUrl;
+      this.descriptionmodel = data.Description
+      this.unitpricemodel = data.UnitPrice;
+      this.smallpricemodel = data.SmallPrice;
+      this.mediumpricemodel = data.MediumPrice;
       this.specificproductcondiments = data.Materials
-      this.materialmodel = this.specificproductcondiments.length <= 0 ? [] : this.specificproductcondiments.map(function(e) {return e.itemId})
-      
-      //console.log("condiments", this.specificproductcondiments)
+      this.materialmodel = this.specificproductcondiments.length <= 0 ? [] : this.specificproductcondiments.map(function(e) {return e.itemId})    
     }) 
   }
 
@@ -73,9 +92,69 @@ getMaterials()
     this.condiments = data
   })
 }
-savechanges()
+async savechanges()
 {
-  console.log("Wew", this.materialmodel);
+  //console.log("the materials", this.arraymaterial)
+
+  var alertcontroller = await this.alertController.create
+  ({
+    header: 'Question',
+    message: 'Are you sure you want to save the changes?',
+    backdropDismiss: false,
+    buttons: 
+    [
+      {
+        text: 'Yes',
+        handler: () => 
+        {
+          var specificparams = 
+          {
+            ImageUrl: this.photoLink,
+            Description: this.descriptionmodel,
+            UnitPrice: this.unitpricemodel,
+            SmallPrice: this.smallpricemodel,
+            MediumPrice: this.mediumpricemodel,
+            Materials: this.arraymaterial 
+          }
+         this.db.updateData(this.productId, specificparams, 'Products')
+         .then(async() => 
+         {
+                  var alert = await this.alertController.create
+                  ({
+                    message: 'Save changes successfully!',
+                    backdropDismiss: false,
+                    buttons: 
+                    [
+                      {
+                        text: 'Ok',
+                        handler: async () => 
+                        {
+                          var loading = await this.loadingController.create
+                          ({
+                            spinner: 'circles',
+                            message: 'Reloading Page Please wait...'
+                          })
+                          await loading.present();
+                          await this.formModal.hide();
+                          setTimeout(async () => {
+                            await loading.dismiss();
+                            window.location.reload() 
+                          }, 4000);
+                        }
+                      }
+                    ]
+                  })
+                  await alert.present();
+         })
+        }
+      },
+      {
+        text: 'No',
+        role: 'cancel'
+      },
+    ]
+  })
+  await alertcontroller.present();
 }
 setmaterialstoeditgramsperoder()
 {
@@ -103,13 +182,136 @@ setmaterialstoeditgramsperoder()
       i.itemName =  data.Itemname;
     })    
   })
-  console.log("array", this.arraymaterial)
 }
-
-
 async openModal() 
 {
-  this.setmaterialstoeditgramsperoder()
- await this.formModal.show()
+  var validation = Object.assign(this.validation())
+  if (validation.errormessage != "")
+  {
+    this.errMsg = validation.errormessage
+    $('#modalerror').html(this.errMsg)
+    await this.errorModal.show() 
+  } 
+  else 
+  {
+    this.setmaterialstoeditgramsperoder()
+    await this.formModal.show()
+    this.errMsg = ""
+    $('#modalerror').html("")
+    this.validationForGramsPerOrder()
+  }
 }
+fileChanged(event: any) {
+  const files = event.target.files
+  const data = new FormData()
+  data.append('file', files[0])
+  //00fb1c6ab7c377f68517
+  
+  //this for my github account 760e7038539ea9dd5176
+
+  //pukikinginamo@gmail.com account
+  data.append('UPLOADCARE_PUB_KEY', 'd215c12fb1b590263b07')
+  this.http.post('https://upload.uploadcare.com/base/', data).subscribe((events: any) => {
+    var json = events
+    for (var prop in json) {
+      console.log("wew", json.file)
+      for (const variables of files) {
+        this.photoLink = `https://ucarecdn.com/${json.file}/${variables.name}`
+
+      }
+    }
+  this.withPhoto = true
+  })
+}
+
+validation()
+{
+  var errormessage = ""
+  var unitprice = this.unitpricemodel == null || this.unitpricemodel == undefined || this.unitpricemodel == "";
+  var smallprice = this.smallpricemodel == null || this.smallpricemodel == undefined || this.smallpricemodel == "";
+  var mediumprice = this.mediumpricemodel == null || this.mediumpricemodel == undefined || this.mediumpricemodel == "";
+  var description = this.descriptionmodel == null || this.descriptionmodel == undefined || this.descriptionmodel == "";
+  var materials = this.materialmodel == null || this.materialmodel == undefined || this.materialmodel == "";
+
+  if (this.categorymodel == "Milktea")
+  {
+      errormessage += smallprice == true ? "<p>● Small Price</p><br>" : "";
+      errormessage += mediumprice == true ? "<p>● Medium Price</p><br>" : "";
+    errormessage += description == true ? "<p>● Description</p> <br>" : "";
+    errormessage += materials == true ? "<p>● Condiments</p> <br>" : "";
+    
+    }
+  else 
+  {
+
+    errormessage += unitprice == true ? "<p>● Unit Price</p> <br>" : "";
+    errormessage += description == true ? "<p>● Description</p> <br>" : "";
+    errormessage += materials == true ? "<p>● Condiments</p> <br>" : "";
+  }
+    this.validationMessageObject = 
+    {
+      errormessage: errormessage
+    }
+    return this.validationMessageObject;
+  }
+
+  updateGramsPerOrderEvent(event: any, mat: any)
+{
+  mat.gramsperorder = parseInt(event.target.value)
+  this.validationForGramsPerOrder()
+  //mat.gramsperordermedium = this.category != 'Milktea' ? 0 : parseInt(event.target.value)
+  //mat.gramsperordersmall = this.category != 'Milktea' ? 0 : parseInt(event.target.value) 
+}
+updateGramsPerOrderSmallEvent(event: any, mat: any)
+{
+  //mat.gramsperorder = this.category != 'Milktea' ? parseInt(event.target.value) : 0
+  //mat.gramsperordermedium = this.category != 'Milktea' ? 0 : parseInt(event.target.value)
+  mat.gramsperordersmall = parseInt(event.target.value) 
+  this.validationForGramsPerOrder()
+}
+updateGramsPerOrderMediumEvent(event: any, mat: any)
+{
+  //mat.gramsperorder = this.category != 'Milktea' ? parseInt(event.target.value) : 0
+  //mat.gramsperordermedium = this.category != 'Milktea' ? 0 : parseInt(event.target.value)
+  mat.gramsperordermedium = parseInt(event.target.value)
+  this.validationForGramsPerOrder() 
+}
+validationForGramsPerOrder()
+{
+  var filterNanValues;
+
+    if (this.categorymodel != 'Milktea')
+    {
+      filterNanValues = this.arraymaterial.filter(f => (isNaN(f.gramsperorder) || f.gramsperorder == 0) 
+      || (isNaN(f.gramsperordersmall) && f.gramsperordersmall == 0)  || 
+      (isNaN(f.gramsperordermedium) && f.gramsperordermedium == 0)
+      )
+    }
+    else 
+    {
+      filterNanValues = this.arraymaterial.filter(f => (isNaN(f.gramsperorder) && f.gramsperorder == 0) 
+      || (isNaN(f.gramsperordersmall) || f.gramsperordersmall == 0)  || 
+      (isNaN(f.gramsperordermedium) || f.gramsperordermedium == 0)
+      )
+    }
+    
+    //var showCondimentsWithNaNValues = filterNanValues.map(function(e) {return `${e.itemName.replace(",", "")} \n`}).toString()
+    //showCondimentsWithNaNValues = showCondimentsWithNaNValues.replace(",", "")
+    if (filterNanValues.length >= 1)
+    {
+      this.disableSaveChangesButton = true
+    }
+    else 
+    {
+      //console.log("success")
+      //alert("success")
+      this.disableSaveChangesButton = false
+    } 
+}
+
+closeModal()
+{
+  this.formModal.hide()
+}
+
 }

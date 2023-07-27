@@ -11,14 +11,14 @@ export class ViewproductsComponent implements OnInit {
 public products: any[] = []
   constructor(public db: DBService) 
   { 
-    this.getProducts()
+    this.getProducts('');
   }
 
   ngOnInit(): void 
   {
   }
 
-  getProducts()
+  getProducts(productnamefilter: any)
   {
     this.db.getData('Products')
     .subscribe((data) => 
@@ -29,10 +29,19 @@ public products: any[] = []
         i.ImageConverted = `${imageConverted[0]}//${imageConverted[2]}/${imageConverted[3]}//-/contrast/3/-/filter/cyren/100/-/preview/70x70/`
   
       })
-      this.products = data;
-      console.log("ew", this.products)
+      
+        if (productnamefilter != '' || productnamefilter != null || productnamefilter != undefined)
+        {
+          data = data.filter(f => f.ProductName.toLowerCase().includes(productnamefilter));
+        }
+        this.products = data;
     })
   }
 
+  searchEvent(event: any)
+  {
+    var data = event.target.value
+    this.getProducts(data);
+  }
 
 }

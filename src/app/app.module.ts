@@ -16,7 +16,7 @@ import { RouteReuseStrategy } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { AdminsidebarComponent } from './adminsidebar/adminsidebar.component';
-
+import { HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,7 +30,8 @@ import { AdminsidebarComponent } from './adminsidebar/adminsidebar.component';
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
     NgbModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
   providers: 
   [
